@@ -33,18 +33,14 @@ async def test_reset(dut):
     """Verify the design comes out of reset without errors."""
     dut._log.info("Test: Reset")
 
-    # 25.175 MHz VGA pixel clock -> ~39.72 ns period
-    clock = Clock(dut.clk, 39.72, units="ns")
+    clock = Clock(dut.clk, 39.72, unit="ns")
     cocotb.start_soon(clock.start())
 
     await reset_dut(dut)
-
-    # Run for a short time after reset
     await ClockCycles(dut.clk, 1000)
 
-    # uio_out and uio_oe should be 0 (unused)
-    assert dut.uio_out.value == 0, "uio_out should be 0"
-    assert dut.uio_oe.value == 0, "uio_oe should be 0"
+    assert dut.uio_out.value.integer == 0, "uio_out should be 0"
+    assert dut.uio_oe.value.integer == 0, "uio_oe should be 0"
 
     dut._log.info("Reset test passed")
 
@@ -54,16 +50,15 @@ async def test_vga_hsync(dut):
     """Verify that hsync toggles within one horizontal line."""
     dut._log.info("Test: VGA hsync signal")
 
-    clock = Clock(dut.clk, 39.72, units="ns")
+    clock = Clock(dut.clk, 39.72, unit="ns")
     cocotb.start_soon(clock.start())
 
     await reset_dut(dut)
 
-    # Sample hsync over one full line (800 clocks) and check it toggles
     hsync_values = set()
     for _ in range(H_TOTAL):
         await RisingEdge(dut.clk)
-        hsync_val = (dut.uo_out.value >> HSYNC_BIT) & 1
+        hsync_val = (dut.uo_out.value.integer >> HSYNC_BIT) & 1
         hsync_values.add(hsync_val)
 
     assert len(hsync_values) == 2, "hsync should toggle during one horizontal line"
@@ -75,16 +70,15 @@ async def test_vga_vsync(dut):
     """Verify that vsync toggles within one full frame."""
     dut._log.info("Test: VGA vsync signal")
 
-    clock = Clock(dut.clk, 39.72, units="ns")
+    clock = Clock(dut.clk, 39.72, unit="ns")
     cocotb.start_soon(clock.start())
 
     await reset_dut(dut)
 
-    # Sample vsync over one full frame and check it toggles
     vsync_values = set()
     for _ in range(FRAME_CLOCKS):
         await RisingEdge(dut.clk)
-        vsync_val = (dut.uo_out.value >> VSYNC_BIT) & 1
+        vsync_val = (dut.uo_out.value.integer >> VSYNC_BIT) & 1
         vsync_values.add(vsync_val)
 
     assert len(vsync_values) == 2, "vsync should toggle during one full frame"
@@ -96,21 +90,19 @@ async def test_button_input(dut):
     """Verify that pressing direction buttons doesn't crash the design."""
     dut._log.info("Test: Button input")
 
-    clock = Clock(dut.clk, 39.72, units="ns")
+    clock = Clock(dut.clk, 39.72, unit="ns")
     cocotb.start_soon(clock.start())
 
     await reset_dut(dut)
 
-    # Press each direction button for a few clocks
-    for btn in [0x01, 0x02, 0x04, 0x08]:  # UP, DOWN, LEFT, RIGHT
+    for btn in [0x01, 0x02, 0x04, 0x08]:
         dut.ui_in.value = btn
         await ClockCycles(dut.clk, 500)
         dut.ui_in.value = 0
         await ClockCycles(dut.clk, 100)
 
-    # Design should still be running (uio signals stay 0)
-    assert dut.uio_out.value == 0
-    assert dut.uio_oe.value == 0
+    assert dut.uio_out.value.integer == 0
+    assert dut.uio_oe.value.integer == 0
 
     dut._log.info("Button input test passed")
 
@@ -120,20 +112,18 @@ async def test_color_output_during_display(dut):
     """Verify that color output is non-zero during the visible area."""
     dut._log.info("Test: Color output in visible area")
 
-    clock = Clock(dut.clk, 39.72, units="ns")
+    clock = Clock(dut.clk, 39.72, unit="ns")
     cocotb.start_soon(clock.start())
 
     await reset_dut(dut)
 
-    # Wait for start of a frame (skip to visible area)
-    # Run past a few lines to get into the display region
+    # Skip into visible area
     await ClockCycles(dut.clk, H_TOTAL * 5 + 100)
 
-    # Sample some pixels in the visible region
     nonzero_seen = False
     for _ in range(640):
         await RisingEdge(dut.clk)
-        out = dut.uo_out.value & 0x77  # mask out hsync/vsync bits
+        out = dut.uo_out.value.integer & 0x77  # mask out hsync/vsync bits
         if out != 0:
             nonzero_seen = True
             break
