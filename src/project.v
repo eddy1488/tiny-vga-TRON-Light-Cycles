@@ -1,6 +1,6 @@
 `default_nettype none
 
-module tt_um_snake_game (
+module tt_um_tron_game (
     input  wire [7:0] ui_in,    // [0]=UP [1]=DOWN [2]=LEFT [3]=RIGHT
     output wire [7:0] uo_out,   // VGA output (TinyVGA Pmod)
     input  wire [7:0] uio_in,
