@@ -1,9 +1,9 @@
 # Tiny Tapeout project information
 project:
-  title:        "VGA snake game"      # Project title
-  author:       "Jacome"      # Your name
+  title:        "TRON: Light Cycles game with VGA support (IEEE)"      # Project title
+  author:       "Jacombo Morales, Hernando Díaz"      # Your name
   discord:      "Jacome10"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  "Snake game implemented on chip using VGA output"      # One line description of what your project does
+  description:  "TRON: Light Cycles 2 player game implemented on chip using VGA output"      # One line description of what your project does
   language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
   clock_hz:     25175000       # Clock frequency in Hz (or 0 if not applicable)
 
@@ -11,7 +11,7 @@ project:
   tiles: "2x2"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
 
   # Your top module name must start with "tt_um_". Make it unique by including your github username:
-  top_module:  "tt_um_snake_game"
+  top_module:  "tt_um_tron_game"
 
   # List your project's source files here.
   # Source files must be in ./src and you must list each source file separately, one per line.
@@ -24,14 +24,14 @@ project:
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
 pinout:
   # Inputs
-  ui[0]: "btn_up"
-  ui[1]: "btn_down"
-  ui[2]: "btn_left"
-  ui[3]: "btn_right"
-  ui[4]: ""
-  ui[5]: ""
-  ui[6]: ""
-  ui[7]: ""
+  ui[0]: "btn_up_p1"
+  ui[1]: "btn_down_p1"
+  ui[2]: "btn_left_p1"
+  ui[3]: "btn_right_p1"
+  ui[4]: "btn_up_p2"
+  ui[5]: "btn_down_p2"
+  ui[6]: "btn_left_p2"
+  ui[7]: "btn_up_p2"
 
   # Outputs
   uo[0]: "R1"
