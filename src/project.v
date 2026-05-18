@@ -42,10 +42,14 @@ module tt_um_snake_game (
     // ==========================================
     // 3. INPUT
     // ==========================================
-    wire btn_up    = ui_in[0];
-    wire btn_down  = ui_in[1];
-    wire btn_left  = ui_in[2];
-    wire btn_right = ui_in[3];
+    wire btn_up_p1    = ui_in[0];
+    wire btn_down_p1  = ui_in[1];
+    wire btn_left_p1  = ui_in[2];
+    wire btn_right_p1 = ui_in[3];
+    wire btn_up_p2    = ui_in[4];
+    wire btn_down_p2  = ui_in[5];
+    wire btn_left_p2  = ui_in[6];
+    wire btn_right_p2 = ui_in[7];
 
     // ==========================================
     // 4. TIMING
@@ -106,10 +110,10 @@ module tt_um_snake_game (
             next_dir <= DIR_RIGHT;
         end else begin
             // Latch direction, prevent 180-degree reversal
-            if      (btn_up    && direction != DIR_DOWN)  next_dir <= DIR_UP;
-            else if (btn_down  && direction != DIR_UP)    next_dir <= DIR_DOWN;
-            else if (btn_left  && direction != DIR_RIGHT) next_dir <= DIR_LEFT;
-            else if (btn_right && direction != DIR_LEFT)  next_dir <= DIR_RIGHT;
+            if      (btn_up_p1    && direction != DIR_DOWN)  next_dir <= DIR_UP;
+            else if (btn_down_p1  && direction != DIR_UP)    next_dir <= DIR_DOWN;
+            else if (btn_left_p1  && direction != DIR_RIGHT) next_dir <= DIR_LEFT;
+            else if (btn_right_p1 && direction != DIR_LEFT)  next_dir <= DIR_RIGHT;
         end
     end
 
